@@ -3,6 +3,8 @@ package com.example.tip_calculator_app;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -26,10 +28,15 @@ public class MainActivity extends AppCompatActivity {
     TextView outputText2;
     TextView outputText3;
     Button calculateButton;
+    Button settingsButton;
     double value;
     double percent;
     double totalPrice;
     double splitPrice;
+
+    private int defaultTipPercentage;
+    private int members;
+    private boolean splitCostChecked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +55,26 @@ public class MainActivity extends AppCompatActivity {
         outputText2 = findViewById(R.id.outputText2);
         outputText3 = findViewById(R.id.outputText3);
         calculateButton = findViewById(R.id.calculateButton);
+        settingsButton = findViewById(R.id.settingsButton);
 
+
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+                defaultTipPercentage = seekBar.getProgress();
+                i.putExtra("default tip percentage", defaultTipPercentage);
+                i.putExtra("number of members", inputText2.getText());
+                if(splitCost.isChecked()) {
+                    splitCostChecked = true;
+                }
+                else {
+                    splitCostChecked = false;
+                }
+                i.putExtra("if split cost", splitCostChecked);
+                startActivity(i);
+            }
+        });
 
         calculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
                 seekBarLabel.setText(i+"");
                 value = Double.parseDouble(inputText.getText().toString());
                 percent = Double.parseDouble(seekBarLabel.getText().toString());
-
             }
 
             @Override
@@ -89,5 +114,29 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void updateOptions() {
+        SharedPreferences sp = getSharedPreferences("shared", MODE_PRIVATE);
+        defaultTipPercentage = sp.getInt("default tip percentage", 15);
+        members = sp.getInt("number of members", 1);
+        splitCostChecked = sp.getBoolean("if split cost", false);
+
+        seekBar.setProgress(defaultTipPercentage);
+        inputText2.setText(members + "");
+
+        if(splitCostChecked == true) {
+            splitCost.setChecked(true);
+        }
+        else {
+            dontSplitCost.setChecked(true);
+        }
+    }
+
+
+    @Override
+    public void onResume() { // called whenever the user changes
+        super.onResume();
+        updateOptions();
     }
 }
