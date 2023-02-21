@@ -82,16 +82,16 @@ public class MainActivity extends AppCompatActivity {
                 value = Double.parseDouble(inputText.getText().toString());
                 percent = Double.parseDouble(seekBarLabel.getText().toString());
                 totalPrice = value * (1 + percent / 100);
-                outputText.setText("$" + totalPrice);
-                outputText2.setText("$" + (totalPrice - value));
+                outputText.setText("$" + (Math.round(totalPrice * 100) / 100.00));
+                outputText2.setText("$" + (Math.round((totalPrice - value) * 100) / 100.00));
 
                 double splitValue = Double.parseDouble(inputText2.getText().toString());
                 if(splitCost.isChecked()) {
                     splitPrice = totalPrice / splitValue;
-                    outputText3.setText("$" + splitPrice);
+                    outputText3.setText("$" + (Math.round(splitPrice * 100) / 100.00));
                 }
                 else {
-                    outputText3.setText("$" + totalPrice);
+                    outputText3.setText("$" + (Math.round(totalPrice * 100) / 100.00));
                 }
             }
         });

@@ -15,7 +15,7 @@
         android:layout_marginTop="90dp"
         android:ems="10"
         android:hint="price"
-        android:inputType="number"
+        android:inputType="number|numberDecimal"
         android:minHeight="48dp"
         android:text="0"
         app:layout_constraintEnd_toEndOf="parent"
